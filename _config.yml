@@ -17,7 +17,7 @@ instantpage:
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://example.com/child' and root as '/child/'
-url: 
+url: https://semon.vercel.app 
 root: 
 permalink: :year/:month/:day/:title/
 permalink_defaults:
