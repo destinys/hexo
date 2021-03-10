@@ -123,7 +123,7 @@ indexbtn:
   enable: true
   name: 下载主题
   icon: fab fa-github-alt
-  url: https://github.com/blinkfox/hexo-theme-matery
+  url: https://github.com/blinkfox/hexo-theme-matery.git
 
 # The configurations of the second line of home banner
 # icon/button will not show up if you leave the corresponding socialLink empty
