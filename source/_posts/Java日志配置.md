@@ -1,7 +1,8 @@
 ---
 title: Java日志配置
-categories: Tech
+categories: Program
 tags: Java
+date: 2020-03-03 11:00:00
 author: Semon
 ---
 # Java日志配置

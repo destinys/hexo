@@ -1,7 +1,8 @@
 ---
 title: Java设计模式
-categories: Tech
+categories: Program
 tags: Java
+date: 2020-05-06
 author: Semon
 ---
 # Java 设计模式

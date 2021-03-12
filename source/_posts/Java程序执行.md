@@ -1,7 +1,8 @@
 ---
 title: Java运行环境变量
-categories: Tech
+categories: Program
 tags: Java
+date: 2020-04-01
 author: Semon
 ---
 # Java执行及classpath
