@@ -1,7 +1,7 @@
 ---
 title: Git简介及使用
 categories: Dev
-tags: Git
+tags: git
 date: 2021-03-15
 author: Semon
 top: true

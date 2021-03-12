@@ -1,6 +1,6 @@
 ---
 title: Docker架构原理及使用
-categories: Tech
+categories: Dev
 tags: docker
 author: semon
 top: true
