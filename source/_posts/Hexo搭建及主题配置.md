@@ -225,7 +225,10 @@ githubEmojis:
   styles:
   customEmojis:
   
-
+# 添加本地图片支持
+npm install hexo-asset-image --save 
+## _config.yml 修改配置 图片保存文件夹需与文档同名
+post_asset_folder: true
 
 # 配置当前主题
 ## vi blog/_config.yaml
