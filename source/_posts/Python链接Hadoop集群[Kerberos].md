@@ -1,7 +1,9 @@
 ---
 title: Python链接Hadoop集群[Kerberos]
 categories: Hadoop
-tags: hive,python
+tags: 
+  - hive
+  - python
 author: Semon
 date: 2021-04-26 15:00:00
 top: true
