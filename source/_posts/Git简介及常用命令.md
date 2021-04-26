@@ -27,7 +27,9 @@ Git迅速成为最流行的分布式版本控制系统，尤其是2008年，GitH
 
 下图为git架构及常用操作：
 
-![image-20200426113305606](./Git.assets/image-20200426113305606.png)
+![image-20200426113305606](./Git简介及常用命令/image-20200426113305606.png)
+
+{% asset_img Git.assets/image-20200426113305606.png This is an test image %}
 
 专有名词解释：
 
