@@ -1,6 +1,6 @@
 ---
 title: Linux互信配置
-categories: OS
+categories: Linux
 tags: ssh
 author: semon
 date: 2021-03-12

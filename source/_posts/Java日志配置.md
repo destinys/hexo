@@ -1,10 +1,11 @@
 ---
 title: Java日志配置
 categories: Program
-tags: Java
-date: 2020-03-03 11:00:00
-author: Semon
+tags: java
+author: semon
+date: 2021-04-27
 ---
+
 # Java日志配置
 ## 常用日志类
 + logger：Jdk内置，基本不用于生产环境
@@ -12,8 +13,8 @@ author: Semon
 + log4j2：apache提供，log4j升级版本，性能较log4j提升10倍(官方说明)
 + logback：log4j作者出走后重新开发，性能相对log4j有很大提升
 
-
 ### log4j
+
 log4j主要通过log4j.properties配置文件进行定义
 
 ```bash
