@@ -225,8 +225,8 @@ githubEmojis:
   styles:
   customEmojis:
   
-# 添加本地图片支持
-npm install hexo-asset-image --save 
+# 添加本地图片支持 --必须使用这个连接安装，否则生成路径不对
+npm install https://github.com/CodeFalling/hexo-asset-image 
 ## _config.yml 修改配置 图片保存文件夹需与文档同名
 post_asset_folder: true
 
