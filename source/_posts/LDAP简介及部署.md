@@ -1,3 +1,11 @@
+---
+title: LDAP简介
+categories: Hadoop
+tags: ldap
+author: semon
+date: 2021-04-28
+---
+
 # LDAP简介
 
 LDAP是轻量目录访问协议，英文全称是Lightweight Directory Access Protocol，简称LDAP。LDAP的目录服务其实也是一种数据库系统（Berkeley DB），只是这种数据库是一种树形结构（B Tree），对于数据的读取、浏览、搜索有很好的效果，但不适合频繁写，不支持事务不能回滚。
