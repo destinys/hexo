@@ -64,7 +64,7 @@ rm -rf crontab.conf   # 删除导出生成列表
 方案二：
 
 ```bash
-# 直接编辑定时任务列表文件  /var/spool/cron/目录下已用户名命名文件为对应用户下定时任务列表
+# 直接编辑定时任务列表文件  /var/spool/cron/目录下以用户名命名文件为对应用户下定时任务列表
 echo "* * * * * /bin/bash demo.sh" >> /var/spool/cron/root
 ```
 
