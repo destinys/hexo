@@ -35,7 +35,7 @@ Hadoop1.x中包括两个核心组件：MR(MapReduce)和HDFS(Hadoop Distributed F
 
 Hadoop的发展历史如下图：
 
-![image-20210506223607978](Hadoop%E5%85%A5%E9%97%A8%E7%B3%BB%E5%88%97(%E4%B8%80)/image-20210506223607978.png)
+![Hadoop发展史](Hadoop%E5%85%A5%E9%97%A8%E7%B3%BB%E5%88%97(%E4%B8%80)/image-20210506223607978.png)
 
 ## Hadoop特性
 

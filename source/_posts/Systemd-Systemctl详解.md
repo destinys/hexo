@@ -201,13 +201,13 @@ $ sudo systemctl set-property httpd.service CPUShares=500
 
 Unit 之间存在依赖关系：A 依赖于 B，就意味着 Systemd 在启动 A 的时候，同时会去启动 B。
 
-`systemctl list-dependencies`命令列出一个 Unit 的所有依赖。
+`systemctl list-dependencies nginx.service`命令列出一个 Unit 的所有依赖。
 
-![image-20210430204855765](Systemd-Systemctl%E8%AF%A6%E8%A7%A3/image-20210430204855765.png)
+![list-dependencies](Systemd-Systemctl%E8%AF%A6%E8%A7%A3/image-20210430204855765.png)
 
 `systemctl list-dependencies --all nginx.service`命令列出一个 Unit 的所有依赖。(展开所有依赖子项)
 
-![image-20210430204831222](Systemd-Systemctl%E8%AF%A6%E8%A7%A3/image-20210430204831222.png)
+![list-dependencies --all](Systemd-Systemctl%E8%AF%A6%E8%A7%A3/image-20210430204831222.png)
 
 #### Unit配置文件
 
