@@ -58,9 +58,8 @@ yum install vsftpd libdb-utils
 #### 用户配置
 
 ```bash
-mkdir /opt/sftp   #创建ftp根目录
-groupadd virftp  #创建ftp用户组
-useradd -g virftp  -d  /opt/sftp/myftp -s /sbin/nologin virftp  # 指定用户组为sftp  家目录为/opt/sftp/myftp  无法登陆OS
+mkdir /opt/ftp_server   #创建ftp根目录
+useradd  -d  /opt/sftp/ftp_server -s /sbin/nologin virftp  # 指定用户组为sftp  家目录为/opt/sftp/myftp  无法登陆OS
 echo 'passwordstr' |passwd --stdin.  #设置用户密码为passwordstr
 ```
 
@@ -68,7 +67,7 @@ echo 'passwordstr' |passwd --stdin.  #设置用户密码为passwordstr
 
 ```bash
 # 属主与权限必须严格按照以下配置，如需写权限可在此基础上创建子目录用于写
-chown virftp:virftp /opt/sftp/myftp
+chown virftp:virftp /opt/ftp_server
 ```
 
 #### 重启VSFTPD服务
@@ -89,22 +88,22 @@ systemctl restart vsftpd
    deppon      #虚拟用户名
    deppon@123  #虚拟用户对应密码
    
-   chmod 600 /etc/vsftpd/vir_conf/vir_user
+   chmod 600 /etc/vsftpd/conf/vir_user
    ```
 
 2. 生成虚拟用户数据库
 
    ```bash
-   db_load -T -t hash -f /etc/vsftpd/vir_conf/vir_user /etc/vsftpd/vir_conf/vir_user.db
-   chmod 600 /etc/vsftpd/vir_conf/vir_user.db
+   db_load -T -t hash -f /etc/vsftpd/conf/vir_user /etc/vsftpd/conf/vir_user.db
+   chmod 600 /etc/vsftpd/conf/vir_user.db
    ```
 
 3. 配置虚拟用户验证文件
 
    ```bash
    # vi /etc/pam.d/vsftpd   注释文件中所有配置项，新增以下配置项
-   auth	required	/lib64/security/pam_userdb.so	db=/etc/vsftpd/vir_conf/vir_user
-   account	required	/lib64/security/pam_userdb.so	db=/etc/vsftpd/vir_conf/vir_user
+   auth	required	/lib64/security/pam_userdb.so	db=/etc/vsftpd/conf/vir_user
+   account	required	/lib64/security/pam_userdb.so	db=/etc/vsftpd/conf/vir_user
    ```
 
 
@@ -119,8 +118,6 @@ anonymous_enable=NO
 
 #允许本地用户登录，虚拟用户需映射本地用户，需开启该配置
 local_enable=YES
-#启用上传写入支持
-wirte_enable=YES
 #限制本地用户仅可访问家目录
 chroot_local_user=YES
 #启用虚拟账户映射 
@@ -133,8 +130,8 @@ pam_service_name=vsftpd
 user_config_dir=/etc/vsftpd/vir_conf
 #启用chroot时，虚拟用户根目录允许写入
 allow_writeable_chroot=YES
-#是否启用用户清单，启用后根据userlist_deny参数配置判定清单中用户是否可以登陆
-userlist_enable=YES
+#是否启用用户清单，启用后根据userlist_deny参数配置判定清单中用户是否可以登陆,与user_list配合使用  ftpusers为禁止登陆用户列表，无开关控制
+userlist_enable=NO
 # 指定清单属性，YES为拒绝清单，NO为允许清单
 userlist_deny=NO
 #禁用反向解析，提升登陆ftp速度
@@ -189,9 +186,9 @@ listen_port=21
 
 ```bash
 # 为虚拟用户创建ftp根目录
-mkdir -p /opt/data/ftproot/deppon/
+mkdir -p /opt/ftp_server/demo
 #确保映射用户对所有ftp目录均具备读写权限
-chown virftp:virftp  /opt/data/ftproot/deppon/
+chown virftp:virftp  /opt/ftp_server/demo
 
 # vim /etc/vsftpd/vir_conf/deppon
 # 配置文件与虚拟用户名保持一致
@@ -207,7 +204,7 @@ anon_other_write_enable=YES
 #上传文件的掩码,如022时，上传目录权限为755,文件权限为644
 anon_umask=022
 #指定虚拟用户的虚拟目录（虚拟用户登录后的主目录）
-local_root=/opt/data/ftproot/deppon/
+local_root= /opt/ftp_server/demo
 ```
 
 #### 禁止登陆用户清单
@@ -226,7 +223,7 @@ systemctl restart vsftpd
 ftp localhost
 ```
 
-###  SFTP方案
+###  SFTP方案 （方案二）
 
 ####  用户配置
 

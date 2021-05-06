@@ -1,6 +1,6 @@
 ---
 title: Nginx架构原理及使用
-categories: Background
+categories: backend
 tags: nginx
 author: semon
 date: 2021-03-13
