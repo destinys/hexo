@@ -1,7 +1,7 @@
 ---
 title: Java运行环境变量
 categories: Program
-tags: Java
+tags: java
 date: 2020-04-01
 author: Semon
 ---

@@ -12,9 +12,10 @@ top: true
 # Python链接Hadoop集群[Kerberos]
 
 ## 安装系统依赖包
+
 ```bash
 # 安装系统基础依赖包
-yum install  libffi-devel python-devel openssl-devel  cyrus-sasl cyrus-sasl-devel cyrus-sasl-lib  -y
+yum install  libffi-devel python-devel openssl-devel  cyrus-sasl cyrus-sasl-devel cyrus-sasl-lib  gcc-c++ -y
 ```
 
 ## 安装python模块
@@ -36,6 +37,8 @@ pip install --ignore-installed requests hdfs[kerberos]
 ```
 
 ## python链接Hive脚本
+
+### 方案一：提交至默认队列
 
 ```python
 #!/usr/bin/python
@@ -60,6 +63,33 @@ with krbcontext(using_keytab=True,
     cur.close()
     conn.close()
 ```
+
+### 方案二：提交至指定队列
+
+```python
+#!/usr/bin/python
+from pyhive import hive
+from krbcontext import krbcontext
+config = {
+    "kerberos_principal": "jzt_dmp/dev@BDMS.163.COM",
+    "keytab_file": '/root/jzt_dmp.keytab',
+    "kerberos_ccache_file": './hive_ccache_uid',
+    "AUTH_MECHANISM": "GSSAPI"
+}
+with krbcontext(using_keytab=True,
+                               principal=config['kerberos_principal'],
+                               keytab_file=config['keytab_file'],
+                               ccache_file=config['kerberos_ccache_file']):
+    conn = hive.connection(host='bigdata004.dmp.jztweb.com', port=9999, auth_mechanism='GSSAPI',kerberos_service_name='hive',configuration={"mapreduce.job.queuename":"root.schedule_queue"})
+    cur = conn.cursor()
+    cur.execute('select count(1) from b2b_ods.dim_plat');
+
+    print(cur.fetchone())
+    cur.close()
+    conn.close()
+```
+
+
 
 ## python链接Impala脚本
 
@@ -137,7 +167,63 @@ with krbcontext(using_keytab=True,
 ```
 
 
+
+## 通过python基础模块实现kerberos认证
+
+### 创建上下文管理器
+
+```python
+import os,sys
+import subprocess
+from contextlib import contextmanager
+
+
+def KRB5KinitError(Exception):
+  	pass
+
+def kinit_with_keytab(keytab_file,principal,ccache_file):
+	''' 
+ 	 initialize kerberos using keytab file
+	return the tgt filename
+	'''
+	cmd = 'kinit -kt %(keytab_file)s -c %(ccache_file)s %(principal)s'
+    args = {}
+
+	args['keytab_file'] = keytab_file
+	args['principal'] = principal
+	args['ccache_file'] = ccache_file
+
+	kinit_proc = subprocess.Popen(
+		(cmd % args).split(),
+		stderr = subprocess.PIPE)
+		stdout_data,stderr_data = kinit_proc.communicate()
+
+	if kinit_proc.returncode >0:
+  		raise KRB5KinitError(stderr_data)
+    
+	return ccache_file
+
+
+@contextmanager
+def krbcontext(using_keytab=False,**kwargs):
+  '''
+  A context manager for krberos-related actions
+  Using_keytab: specify to use keytab file in kerberos context  if true, or be as a regular user.
+  kwargs:contains the necessary arguments used in kerberos context, it can contain principal,keytab_file, ccache_file
+  '''
+  env_name='KRB5CCNAME'
+  h_ccache = os.getenv(env_name)
+  ccache_file = kinit_with_keytab(**kwargs)
+  os.environ[env_name] = ccache_file
+  yield
+
+
+```
+
+
+
 ## FAQ
+
 Q: `sys.stderr.write(f"ERROR: {exc}")`
 
 A: 因python2 已经停止支持导致pip进行安装时报错，从官网下载2.7版本的get-pip.py，然后安装
@@ -146,3 +232,7 @@ A: 因python2 已经停止支持导致pip进行安装时报错，从官网下载
 wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
 python get-pip.py
 ```
+
+Q：`ImportError: cannot import name TFrozenDict`
+
+A：安装pyhive时需添加[hive]后缀，否则有些关联的包装不上，会导致报错

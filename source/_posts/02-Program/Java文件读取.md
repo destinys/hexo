@@ -1,7 +1,7 @@
 ---
 title: Java读取文件
 categories: Program
-tags: Java
+tags: java
 date: 2020-02-02 13:00:00
 author: Semon
 ---

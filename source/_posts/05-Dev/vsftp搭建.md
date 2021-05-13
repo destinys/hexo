@@ -115,6 +115,8 @@ systemctl restart vsftpd
 #禁止匿名用户登录
 anonymous_enable=NO
 
+# 允许用户创建上传
+write_enable=YES
 
 #允许本地用户登录，虚拟用户需映射本地用户，需开启该配置
 local_enable=YES
@@ -176,11 +178,18 @@ pasv_min_port=60000
 pasv_max_port=65535
 #是否允许使用ls -R等命令
 ls_recurse_enable=YES
+
+
 #是否启用监听
 listen=YES
 #指定监听端口，默认为21
 listen_port=21
 ```
+
+> 1. 主动模式：服务端只需防火墙开放固定端口，客户端使用高位随机端口访问服务端
+>
+> 2. 被动模式：服务端需要防火墙开放监听端口与高位范围端口，客户端发起请求后，服务端从指定范围端口中随机分配端口供客户端连接
+> 3. 变更监听端口：修改listen_port及/etc/services配置文件中ftp项端口
 
 #### VSFTP用户级配置
 

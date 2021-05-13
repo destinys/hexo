@@ -1,7 +1,7 @@
 ---
 title: Java设计模式
 categories: Program
-tags: Java
+tags: java
 date: 2020-05-06
 author: Semon
 ---

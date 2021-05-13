@@ -1,7 +1,7 @@
 ---
 title: JavaIO流
 categories: Program
-tags: Java
+tags: java
 author: Semon
 date: 2020-01-01 15:00:00
 ---
