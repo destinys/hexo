@@ -13,9 +13,19 @@ author: Semon
 //该方法获取的路径为class文件当前路径，后面可接相对class文件的相对路径文件或classpath为根目录的绝对路径；
 getClass.getResource():
 
+// 获取当前class文件所在路径
+// 方案一：（需先创建对象再使用）
+this.getClass().getProtectionDomain().getCodeSource().getLocation().getFile()
+// 方案二：（可在静态方法中使用，其中FileUtils为class名）
+ FileUtils.class.getProtectionDomain().getCodeSource().getLocation().getFile()
+ 
 //该方法获取的路径为classpath的根目录，即'/'，故其后只能跟以非'/'开头的相对路径；
 getClass().getClassLoader().getResource():
 
 //获取执行jar操作系统路径
 System.getProperty("user.dir")：
+ 
+  //获取当前工作目录，同user.dir
+  File dir = new File("");
+  String path = dir.getAbsolutePath();
 ```
