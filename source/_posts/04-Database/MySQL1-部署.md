@@ -1,5 +1,5 @@
 ---
-title: Mysql部署
+title: MySQL部署
 categories: Database
 tags: mysql
 author: semon
@@ -201,5 +201,83 @@ show slave status \G;
 ```BASH
 # 预置数据库
 mysql -u root -pu19cMtBGd0 -e "CREATE USER 'ambari'@'%' IDENTIFIED BY 'AfQUktZcJg'; GRANT ALL PRIVILEGES ON ambari.* TO 'ambari'@'%'; DELETE FROM mysql.user WHERE user=''; flush privileges; create database ambari;"
+```
+
+# 最佳实践
+
+## 脏页刷新
+
+### 什么是脏页？
+
+MySQL InnoDB表基本都是基于B+树索引进行存储的，而数据存储的最小单元就是数据页；而当内存中的数据页与磁盘中的不一致时，该数据页就叫做脏页；当执行`flush`操作将磁盘数据页和内存数据页进行合并之后，内存和磁盘的数据页同步，称为干净页；
+
+> MySQL物理存储结构：表 –> 表空间（索引）--> 段 –> 区 –> 页 –> 行 –> 列；
+>
+> Buffer Pool中数据页状态：
+>
+> 1. 尚未使用的数据页；
+> 2. 使用了但已完成`flush`的干净页；
+> 3. 使用了尚未`flush`的脏页；
+
+### 为什么会出现脏页？
+
+MySQL数据库在执行`select`、`update`、`delete`操作时，InnoDB使用`change buffer`进行加速写操作，可以将写操作的随机磁盘访问调整为局部顺序操作，而随机磁盘访问是数据库操作中性能影响较大的点；当非唯一索引记录的缓存页发生写操作时，修改完成`change buffer`就可以立刻返回了；
+
+当我们需要执行一个简单的查询操作时，可能发生抖动，即某次查询的耗时骤增，外在整体表现就是tp50非常低，但tp999非常高的现象；因为执行某查询操作时，发生了刷脏页的操作，并且更可怕的是发生多次间接的连坐（`innodb_flush_neighbors`）；
+
+### 脏页刷新的刷新时机
+
++ InnoDB的`redo log`日志写满
+
+  此时操作系统不得不停止所有更新操作，将`check point`向前推，`redo log`可以留出更多的空间，并把该部分的脏页`flush`到磁盘中；（`flush`动作期间该段不可写）
+
++ 系统内存不足
+
+  需要新的数据页但是发现需要淘汰部分数据页，而数据页存在脏页，则需要先执行`flush`操作，才能进行淘汰；
+
++ 后端线程刷新脏页
+
+  即`Buffer Pool`中的`page cleaner Thread`；
+
++ MySQL关闭实例时
+
+  服务实例关闭时，需刷新所有脏页；
+
+### 脏页刷新影响因素
+
++ 脏页比例
+
+  `innodb_max_dirty_pages_pct`参数可设置脏页的比例，超过该比例就触发刷新机制，默认值为75%；
+
++ `redo log`写速度
+
+  `innodb_io_capacity`参数可设置磁盘刷新的页数，该值可设置为磁盘的IOPS；具体值可使用工具进行测试；
+
+  ```bash
+  fio -filename=$filename -direct=1 -iodepth 1 -thread -rw=randrw -ioengine=psync -bs=16k -size=500M -numjobs=10 -runtime=10 -group_reporting -name=mytest 
+  ```
+
+
+
+## 存储引擎层优化
+
+```bash
+#缓存池大小，一般为物理内存的 60% - 80%
+innodb_buffer_pool_size=
+#如果 innodb_buffer_pool_size 大小超过 1GB，innodb_buffer_pool_instances 值就默认为 8；否则，默认为 1；
+innodb_buffer_pool_instances= 4
+#
+innodb_file_per_table=(1,0)
+# 1-最安全  0-高性能  2-折中
+innodb_flush_log_at_trx_commit= 0
+Innodb_flush_method
+innodb_log_buffer_size
+innodb_log_files_in_group
+innodb_max_dirty_pages_pct
+innodb_additional_mem_pool_size
+
+max_binlog_cache_size
+max_binlog_size
+
 ```
 
